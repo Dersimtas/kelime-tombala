@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Kelime Tombala · B2→C1</title>
+  <style>
+    :root {
+      --bg: #F6F4EE;
+      --surface: #FFFFFF;
+      --surface-soft: #EFECE3;
+      --border: #E4DFD2;
+      --text: #1E242B;
+      --text-muted: #646E78;
+      --primary: #1F6E5C;
+      --primary-hover: #175748;
+      --primary-soft: #E6F3EF;
+      --accent: #C85A32;
+      --accent-soft: #FCEEE9;
+      --gold: #B7791F;
+      --gold-soft: #FEF6E4;
+      --shadow: 0 8px 24px rgba(30, 36, 43, 0.06);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.45;
+      overflow-x: hidden;
+    }
+
+    .app-shell {
+      min-height: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 16px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Header */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 4px 2px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      object-fit: cover;
+      box-shadow: 0 2px 8px rgba(31, 110, 92, 0.18);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.15;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      height: 36px;
+      padding: 0 11px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-soft);
+    }
+
+    .btn-finish {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid #E8C5B8;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-finish:hover {
+      background: #F9DFD6;
+    }
+
+    .btn-finish:active {
+      transform: scale(0.97);
+    }
+
+    /* Live Mini Stats */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .stat-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .stat-val {
+      display: block;
+      font-size: 16px;
+      font-weight: 800;
+      margin-top: 1px;
+      color: var(--text);
+    }
+
+    .stat-val.good { color: var(--primary); }
+    .stat-val.bad { color: var(--accent); }
+    .stat-val.gold { color: var(--gold); }
+
+    /* Toast */
+    .toast {
+      display: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: var(--text);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    /* Play View */
+    .play-view {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .direction-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px;
+    }
+
+    .direction-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .bag-counter {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Word Box */
+    .word-box {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      min-height: 185px;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .word-box.is-correct {
+      border-color: var(--primary);
+      background: #F6FBF9;
+    }
+
+    .word-box.is-wrong {
+      border-color: var(--accent);
+      background: #FFF9F7;
+    }
+
+    .word-text {
+      font-size: clamp(26px, 7vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      word-break: break-word;
+      line-height: 1.2;
+    }
+
+    .word-pos {
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-soft);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+
+
+    /* Answer Row (Interactive Fill-in-the-Blanks Slots) */
+    .answer-form {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .slot-box {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      min-height: 54px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      cursor: text;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .slot-box.is-focused {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(31, 110, 92, 0.12);
+    }
+
+    .slot-box.is-disabled {
+      background: var(--surface-soft);
+      cursor: default;
+    }
+
+    .slot-display {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 12px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slot-word {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+
+    .char-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 17px;
+      height: 28px;
+      padding: 0 1px;
+      border-bottom: 2px solid #9AA5B1;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .char-slot.is-locked {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      cursor: default;
+    }
+
+    .char-slot.is-filled {
+      color: var(--text);
+      border-bottom-color: var(--primary);
+    }
+
+    .char-slot.is-active {
+      border-bottom-color: var(--primary);
+      background: var(--primary-soft);
+      border-radius: 4px 4px 0 0;
+    }
+
+    .char-slot.is-hyphen {
+      border-bottom: none;
+      min-width: 10px;
+      color: var(--text-muted);
+    }
+
+    .answer-input-hidden {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .btn-send {
+      height: 50px;
+      padding: 0 20px;
+      border-radius: 14px;
+      border: none;
+      background: var(--primary);
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-send:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-send:active {
+      transform: scale(0.97);
+    }
+
+    .helper-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px;
+      min-height: 22px;
+    }
+
+    .hint-text {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .skip-link {
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      padding: 2px 4px;
+    }
+
+    .skip-link:hover {
+      color: var(--text);
+    }
+
+    /* Feedback Card */
+    .feedback-card {
+      display: none;
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .feedback-card.show {
+      display: block;
+    }
+
+    .feedback-card.correct {
+      background: var(--primary-soft);
+      border-color: #B9DFD4;
+      color: #134E40;
+    }
+
+    .feedback-card.wrong {
+      background: var(--accent-soft);
+      border-color: #F0C4B4;
+      color: #8F2F12;
+    }
+
+    .feedback-title {
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feedback-detail {
+      margin-top: 4px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .feedback-alts {
+      margin-top: 4px;
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    .record-live-pill {
+      display: none;
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: var(--gold-soft);
+      color: var(--gold);
+      border: 1px solid #F2D694;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .record-live-pill.show {
+      display: inline-block;
+    }
+
+    /* Summary & Log Views */
+    .panel {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel.show {
+      display: flex;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .record-banner {
+      display: none;
+      background: var(--gold-soft);
+      border: 1.5px solid #ECC977;
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: #7D500E;
+    }
+
+    .record-banner.show {
+      display: block;
+    }
+
+    .record-banner-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .record-banner-list {
+      font-size: 13px;
+      font-weight: 600;
+      padding-left: 18px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .summary-metric {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .summary-metric .m-val {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .summary-metric .m-lbl {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .mistake-list, .log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .mistake-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .mistake-word {
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .mistake-row {
+      margin-top: 3px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      font-size: 12px;
+    }
+
+    .mistake-yours {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .mistake-correct {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .log-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .log-date {
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .log-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--gold-soft);
+      color: var(--gold);
+      border: 1px solid #ECC977;
+    }
+
+    .log-stats {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .empty-state {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 14px 8px;
+    }
+
+    .btn-primary-full {
+      width: 100%;
+      height: 50px;
+      border-radius: 14px;
+      border: none;
+      background: var(--primary);
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .btn-primary-full:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary-full {
+      width: 100%;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-secondary-full:hover {
+      background: var(--surface-soft);
+    }
+
+    .records-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .rec-box {
+      background: var(--gold-soft);
+      border: 1px solid #F0D493;
+      border-radius: 12px;
+      padding: 10px 6px;
+      text-align: center;
+    }
+
+    .rec-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: #7D500E;
+    }
+
+    .rec-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: #946317;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="brand">
+        <img class="brand-icon" src="data:image/png;base64,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" alt="Kelime Tombala" />
+        <div class="brand-text">
+          <span class="brand-title">Kelime Tombala</span>
+          <span class="brand-sub">Upper Intermediate → Advanced</span>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="icon-btn" id="btnOpenLog" aria-label="Günlük Log">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+          <span>Log</span>
+        </button>
+        <button type="button" class="btn-finish" id="btnFinish">Bitir</button>
+      </div>
+    </header>
+
+    <!-- Live Counters -->
+    <section class="stats-bar" id="statsBar" aria-label="Oturum istatistikleri">
+      <div class="stat-pill">
+        <span class="stat-label">Doğru</span>
+        <span class="stat-val good" id="statCorrect">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Yanlış</span>
+        <span class="stat-val bad" id="statWrong">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Seri</span>
+        <span class="stat-val" id="statStreak">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Rekor</span>
+        <span class="stat-val gold" id="statBest">0</span>
+      </div>
+    </section>
+
+    <div class="toast" id="toastMsg" role="status" aria-live="polite"></div>
+
+    <!-- Main Play View -->
+    <main class="play-view" id="playView">
+      <div class="direction-row">
+        <span class="direction-badge" id="directionBadge">İngilizce → Türkçe</span>
+        <span class="bag-counter" id="bagCounter">Torba: 1 / 100</span>
+      </div>
+
+      <!-- Single Word Box -->
+      <div class="word-box" id="wordBox">
+        <div class="word-text" id="wordText">accurate</div>
+        <div class="word-pos" id="wordPos">sıfat</div>
+      </div>
+
+      <!-- Interactive Fill-in-the-Blanks Slot Box + Submit Button -->
+      <form class="answer-form" id="answerForm" autocomplete="off">
+        <div class="slot-box" id="slotBox">
+          <div class="slot-display" id="slotDisplay" aria-hidden="true"></div>
+          <input
+            type="text"
+            id="answerInput"
+            class="answer-input-hidden"
+            aria-label="Cevabını yaz"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+          />
+        </div>
+        <button type="submit" class="btn-send" id="btnSubmit">Gönder</button>
+      </form>
+
+      <div class="helper-row">
+        <span class="hint-text" id="hintText">Küçük yazım hataları ve eş anlamlılar kabul edilir.</span>
+        <button type="button" class="skip-link" id="btnSkip">Bilmiyorum</button>
+      </div>
+
+      <!-- Feedback Box -->
+      <div class="feedback-card" id="feedbackCard" aria-live="polite">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div class="feedback-detail" id="feedbackDetail"></div>
+        <div class="feedback-alts" id="feedbackAlts"></div>
+        <div class="record-live-pill" id="recordLivePill"></div>
+      </div>
+    </main>
+
+    <!-- End-of-Session Summary View -->
+    <section class="panel" id="summaryView" aria-label="Oturum Özeti">
+      <div class="record-banner" id="summaryRecordBanner">
+        <div class="record-banner-title">Yeni Rekor Kırdın!</div>
+        <ul class="record-banner-list" id="summaryRecordList"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Oturum Özeti</span>
+          <span id="summaryDateLabel" style="font-size:12px; color:var(--text-muted); font-weight:600;"></span>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-metric">
+            <div class="m-val" style="color:var(--primary);" id="sumCorrect">0</div>
+            <div class="m-lbl">Doğru</div>
+          </div>
+          <div class="summary-metric">
+            <div class="m-val" style="color:var(--accent);" id="sumWrong">0</div>
+            <div class="m-lbl">Yanlış</div>
+          </div>
+          <div class="summary-metric">
+            <div class="m-val" id="sumAccuracy">0%</div>
+            <div class="m-lbl">Başarı Oranı</div>
+          </div>
+          <div class="summary-metric">
+            <div class="m-val" style="color:var(--gold);" id="sumBestStreak">0</div>
+            <div class="m-lbl">Oturum Serisi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Yanlış Yapılan Kelimeler</span>
+          <span id="mistakeCountBadge" style="font-size:12px; color:var(--text-muted); font-weight:600;">0</span>
+        </div>
+        <div class="mistake-list" id="mistakeList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Günlük Kayıtlar</span>
+          <span style="font-size:12px; color:var(--gold); font-weight:700;" id="summaryDailyRecordTag"></span>
+        </div>
+        <div class="log-list" id="summaryLogList"></div>
+      </div>
+
+      <button type="button" class="btn-primary-full" id="btnNewSession">Yeni Oturum Başlat</button>
+    </section>
+
+    <!-- Standalone Daily Log View -->
+    <section class="panel" id="logView" aria-label="Günlük Log ve Rekorlar">
+      <div class="card">
+        <div class="card-title">
+          <span>Rekorların</span>
+        </div>
+        <div class="records-strip">
+          <div class="rec-box">
+            <div class="rec-val" id="recSession">0</div>
+            <div class="rec-lbl">Oturum Doğru</div>
+          </div>
+          <div class="rec-box">
+            <div class="rec-val" id="recDaily">0</div>
+            <div class="rec-lbl">Günlük Doğru</div>
+          </div>
+          <div class="rec-box">
+            <div class="rec-val" id="recStreak">0</div>
+            <div class="rec-lbl">En Uzun Seri</div>
+          </div>
+        </div>
+        <div class="card-title" style="margin-top:6px;">
+          <span>Günlük Geçmiş</span>
+        </div>
+        <div class="log-list" id="fullLogList"></div>
+      </div>
+      <button type="button" class="btn-secondary-full" id="btnCloseLog">Oyuna Dön</button>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      // 100 B2 -> C1 (Upper Intermediate -> Advanced) Words with Rich Synonyms
+      const WORD_BANK = [
+        { en: ["accurate", "exact", "precise", "correct"], tr: ["doğru", "kesin", "isabetli", "hatasız", "tam"], pos: "sıfat" },
+        { en: ["achieve", "accomplish", "attain", "succeed", "reach"], tr: ["başarmak", "elde etmek", "ulaşmak", "gerçekleştirmek"], pos: "fiil" },
+        { en: ["adapt", "adjust", "acclimate", "fit in"], tr: ["uyum sağlamak", "adapte olmak", "uyarlamak", "uydurmak", "alışmak"], pos: "fiil" },
+        { en: ["adequate", "sufficient", "enough", "satisfactory"], tr: ["yeterli", "kafi", "uygun", "elverişli", "yeterince"], pos: "sıfat" },
+        { en: ["adjust", "adapt", "modify", "regulate", "set"], tr: ["ayarlamak", "düzenlemek", "uyum sağlamak", "alışmak", "düzeltmek"], pos: "fiil" },
+        { en: ["admit", "confess", "acknowledge", "accept"], tr: ["kabul etmek", "itiraf etmek", "onaylamak", "içeri almak"], pos: "fiil" },
+        { en: ["afford", "manage", "bear", "pay for"], tr: ["maddi gücü yetmek", "karşılayabilmek", "parası yetmek", "gücü yetmek", "alabilmek"], pos: "fiil" },
+        { en: ["ambitious", "driven", "determined", "aspiring"], tr: ["hırslı", "iddialı", "azimli", "istekli", "hedefli"], pos: "sıfat" },
+        { en: ["ancient", "old", "antique", "historic", "archaic"], tr: ["antik", "çok eski", "kadim", "eski", "eski çağlara ait"], pos: "sıfat" },
+        { en: ["anxious", "worried", "nervous", "uneasy", "concerned", "stressed"], tr: ["endişeli", "kaygılı", "tedirgin", "gergin", "stresli", "huzursuz"], pos: "sıfat" },
+        { en: ["apparent", "obvious", "clear", "evident", "visible"], tr: ["açık", "belli", "bariz", "görünür", "aşikar", "ortada"], pos: "sıfat" },
+        { en: ["approach", "method", "way", "near", "come near", "attitude"], tr: ["yaklaşım", "yaklaşmak", "yöntem", "tutum", "ele almak"], pos: "isim / fiil" },
+        { en: ["appropriate", "suitable", "proper", "fitting", "right"], tr: ["uygun", "yerinde", "münasip", "doğru", "yakışan"], pos: "sıfat" },
+        { en: ["approve", "accept", "agree", "endorse", "confirm"], tr: ["onaylamak", "uygun bulmak", "kabul etmek", "beğenmek"], pos: "fiil" },
+        { en: ["assume", "suppose", "presume", "guess", "expect"], tr: ["varsaymak", "sanmak", "farz etmek", "zannetmek", "üstlenmek"], pos: "fiil" },
+        { en: ["attempt", "try", "effort", "endeavor"], tr: ["girişim", "denemek", "teşebbüs", "çabalamak", "deneme"], pos: "fiil / isim" },
+        { en: ["attitude", "behavior", "approach", "stance", "mindset"], tr: ["tutum", "tavır", "davranış", "yaklaşım", "bakış açısı"], pos: "isim" },
+        { en: ["avoid", "evade", "escape", "prevent", "stay away"], tr: ["kaçınmak", "sakınmak", "uzak durmak", "önlemek", "engellemek"], pos: "fiil" },
+        { en: ["aware", "conscious", "informed", "mindful"], tr: ["farkında", "bilinçli", "haberdar", "uyanık"], pos: "sıfat" },
+        { en: ["barely", "hardly", "scarcely", "narrowly", "just"], tr: ["zar zor", "neredeyse hiç", "ancak", "güçlükle", "ucu ucuna"], pos: "zarf" },
+        { en: ["benefit", "advantage", "profit", "gain", "help"], tr: ["fayda", "yarar", "çıkar", "kazanç", "avantaj", "yararlanmak"], pos: "isim" },
+        { en: ["brief", "short", "concise", "quick", "summary"], tr: ["kısa", "özet", "öz", "kısa süreli"], pos: "sıfat" },
+        { en: ["capable", "able", "competent", "skilled", "talented"], tr: ["yetenekli", "becerikli", "yapabilir", "muktedir", "ehil"], pos: "sıfat" },
+        { en: ["cautious", "careful", "prudent", "wary", "alert"], tr: ["dikkatli", "tedbirli", "temkinli", "ihtiyatlı", "çekingen"], pos: "sıfat" },
+        { en: ["challenge", "difficulty", "obstacle", "test", "task"], tr: ["zorluk", "meydan okuma", "sorun", "sınav", "zorlamak"], pos: "isim" },
+        { en: ["circumstance", "situation", "condition", "state", "case"], tr: ["durum", "koşul", "şart", "hal", "ortam"], pos: "isim" },
+        { en: ["claim", "assert", "argue", "state", "demand", "allege"], tr: ["iddia etmek", "iddia", "talep etmek", "öne sürmek", "savunmak"], pos: "fiil / isim" },
+        { en: ["clarify", "explain", "clear up", "simplify"], tr: ["açıklığa kavuşturmak", "netleştirmek", "açıklamak", "aydınlatmak"], pos: "fiil" },
+        { en: ["collaborate", "cooperate", "work together", "team up", "partner"], tr: ["iş birliği yapmak", "birlikte çalışmak", "ortak çalışmak", "yardımlaşmak"], pos: "fiil" },
+        { en: ["commit", "dedicate", "devote", "promise", "pledge"], tr: ["bağlanmak", "söz vermek", "adamak", "işlemek", "taahhüt etmek"], pos: "fiil" },
+        { en: ["compete", "race", "rival", "contest", "contend"], tr: ["rekabet etmek", "yarışmak", "mücadele etmek", "kapışmak"], pos: "fiil" },
+        { en: ["complex", "complicated", "intricate", "difficult", "hard"], tr: ["karmaşık", "karışık", "zor", "çok yönlü", "komplike"], pos: "sıfat" },
+        { en: ["concentrate", "focus", "pay attention", "center"], tr: ["odaklanmak", "yoğunlaşmak", "konsantre olmak", "dikkatini vermek"], pos: "fiil" },
+        { en: ["concern", "worry", "anxiety", "care", "issue", "matter"], tr: ["endişe", "kaygı", "ilgi", "ilgilendirmek", "mesele", "dert"], pos: "isim" },
+        { en: ["conclude", "finish", "end", "deduce", "decide", "complete"], tr: ["sonuca varmak", "sonuçlandırmak", "bitirmek", "tamamlamak", "karar vermek"], pos: "fiil" },
+        { en: ["confident", "self-assured", "sure", "certain", "bold"], tr: ["özgüvenli", "kendine güvenen", "emin", "kendinden emin"], pos: "sıfat" },
+        { en: ["confirm", "verify", "validate", "approve", "prove"], tr: ["onaylamak", "doğrulamak", "teyit etmek", "kesinleştirmek"], pos: "fiil" },
+        { en: ["conflict", "clash", "dispute", "disagreement", "fight", "argument"], tr: ["çatışma", "anlaşmazlık", "çelişki", "kavga", "uyuşmazlık"], pos: "isim" },
+        { en: ["consequence", "result", "outcome", "effect", "impact"], tr: ["sonuç", "etki", "netice", "bedel"], pos: "isim" },
+        { en: ["considerable", "significant", "substantial", "large", "major", "notable"], tr: ["önemli", "kayda değer", "hatırı sayılır", "büyük", "epey", "ciddi"], pos: "sıfat" },
+        { en: ["consistent", "steady", "stable", "coherent", "reliable", "regular"], tr: ["tutarlı", "istikrarlı", "uyumlu", "sürekli", "düzenli"], pos: "sıfat" },
+        { en: ["constant", "continuous", "steady", "permanent", "nonstop", "fixed"], tr: ["sürekli", "sabit", "devamlı", "aralıksız", "daimi"], pos: "sıfat" },
+        { en: ["consume", "use", "spend", "eat", "use up"], tr: ["tüketmek", "harcamak", "yemek", "kullanmak"], pos: "fiil" },
+        { en: ["contribute", "donate", "help", "add", "support", "give"], tr: ["katkıda bulunmak", "katkı sağlamak", "destek olmak", "yardım etmek"], pos: "fiil" },
+        { en: ["convenient", "handy", "practical", "suitable", "useful", "easy"], tr: ["uygun", "elverişli", "pratik", "rahat", "kullanışlı", "kolay"], pos: "sıfat" },
+        { en: ["convince", "persuade", "assure", "win over"], tr: ["ikna etmek", "inandırmak", "razı etmek"], pos: "fiil" },
+        { en: ["crucial", "critical", "vital", "essential", "key", "important"], tr: ["çok önemli", "kritik", "hayati", "belirleyici", "temel", "önemli"], pos: "sıfat" },
+        { en: ["curious", "inquisitive", "interested", "eager", "strange"], tr: ["meraklı", "ilgili", "garip", "tuhaf"], pos: "sıfat" },
+        { en: ["debate", "discussion", "argument", "dispute", "argue"], tr: ["tartışma", "münazara", "tartışmak", "görüşmek"], pos: "isim / fiil" },
+        { en: ["decade", "ten years", "10 years"], tr: ["on yıl", "onyıl", "10 yıl"], pos: "isim" },
+        { en: ["decline", "refuse", "reject", "decrease", "drop", "fall"], tr: ["reddetmek", "azalmak", "düşmek", "gerilemek", "düşüş", "geri çevirmek"], pos: "fiil" },
+        { en: ["dedicate", "devote", "commit", "allocate"], tr: ["adamak", "ayırmak", "tahsis etmek", "vakfetmek"], pos: "fiil" },
+        { en: ["define", "explain", "describe", "specify", "determine"], tr: ["tanımlamak", "belirlemek", "açıklamak", "tarif etmek"], pos: "fiil" },
+        { en: ["delay", "postpone", "put off", "hold up", "lateness"], tr: ["geciktirmek", "ertelemek", "gecikme", "rötar", "bekletmek"], pos: "fiil / isim" },
+        { en: ["demand", "request", "require", "need", "ask for"], tr: ["talep", "istek", "talep etmek", "istemek", "gerektirmek"], pos: "isim / fiil" },
+        { en: ["demonstrate", "show", "prove", "display", "illustrate", "explain"], tr: ["göstermek", "kanıtlamak", "sergilemek", "ispatlamak", "açıklamak"], pos: "fiil" },
+        { en: ["deny", "refuse", "reject", "dispute", "contradict"], tr: ["inkar etmek", "reddetmek", "yalanlamak", "kabul etmemek"], pos: "fiil" },
+        { en: ["depend", "rely", "trust", "count on", "hinge on"], tr: ["bağlı olmak", "güvenmek", "dayanmak", "bel bağlamak"], pos: "fiil" },
+        { en: ["deserve", "earn", "merit", "be worthy of"], tr: ["hak etmek", "layık olmak", "değmek"], pos: "fiil" },
+        { en: ["despite", "in spite of", "although", "even though", "regardless of"], tr: ["rağmen", "karşın", "buna rağmen"], pos: "edat" },
+        { en: ["determine", "decide", "establish", "identify", "find out"], tr: ["belirlemek", "karar vermek", "saptamak", "tespit etmek"], pos: "fiil" },
+        { en: ["distinct", "different", "separate", "clear", "unique", "obvious"], tr: ["farklı", "belirgin", "ayrı", "net", "özgün", "açık"], pos: "sıfat" },
+        { en: ["distract", "divert", "sidetrack", "disturb"], tr: ["dikkatini dağıtmak", "oyalamak", "şaşırtmak", "dikkat dağıtmak"], pos: "fiil" },
+        { en: ["distribute", "spread", "share", "deliver", "hand out"], tr: ["dağıtmak", "paylaştırmak", "yaymak", "bölüştürmek"], pos: "fiil" },
+        { en: ["diverse", "varied", "different", "various", "mixed"], tr: ["çeşitli", "farklı", "çok çeşitli", "türlü"], pos: "sıfat" },
+        { en: ["domestic", "local", "home", "internal", "national", "household"], tr: ["yerli", "evcil", "ev içi", "iç", "ulusal"], pos: "sıfat" },
+        { en: ["dramatic", "striking", "huge", "sudden", "impressive", "major"], tr: ["çarpıcı", "büyük", "dramatik", "ani", "etkileyici", "ciddi"], pos: "sıfat" },
+        { en: ["eager", "keen", "enthusiastic", "excited", "willing", "anxious"], tr: ["hevesli", "istekli", "sabırsız", "can atan", "arzulu"], pos: "sıfat" },
+        { en: ["efficient", "effective", "productive", "capable", "useful"], tr: ["verimli", "etkili", "etkin", "tasarruflu", "becerikli"], pos: "sıfat" },
+        { en: ["eliminate", "remove", "get rid of", "erase", "drop", "cut out"], tr: ["ortadan kaldırmak", "elemek", "yok etmek", "gidermek", "çıkarmak"], pos: "fiil" },
+        { en: ["emerge", "appear", "arise", "come out", "surface"], tr: ["ortaya çıkmak", "belirmek", "doğmak", "meydana çıkmak"], pos: "fiil" },
+        { en: ["emphasize", "highlight", "stress", "underline", "focus on"], tr: ["vurgulamak", "altını çizmek", "önemini belirtmek", "öne çıkarmak"], pos: "fiil" },
+        { en: ["enable", "allow", "permit", "make possible", "empower", "let"], tr: ["olanak sağlamak", "imkan tanımak", "mümkün kılmak", "sağlamak", "izin vermek"], pos: "fiil" },
+        { en: ["encounter", "meet", "face", "come across", "run into"], tr: ["karşılaşmak", "rastlamak", "denk gelmek", "yüzleşmek"], pos: "fiil" },
+        { en: ["encourage", "motivate", "support", "inspire", "promote", "boost"], tr: ["cesaretlendirmek", "teşvik etmek", "desteklemek", "yüreklendirmek"], pos: "fiil" },
+        { en: ["enormous", "huge", "massive", "giant", "immense", "very big"], tr: ["devasa", "çok büyük", "kocaman", "muazzam", "büyük"], pos: "sıfat" },
+        { en: ["ensure", "guarantee", "make sure", "assure", "secure"], tr: ["garanti etmek", "sağlamak", "emin olmak", "güvence altına almak"], pos: "fiil" },
+        { en: ["essential", "necessary", "vital", "crucial", "key", "basic", "important"], tr: ["temel", "gerekli", "zorunlu", "hayati", "çok önemli", "esas"], pos: "sıfat" },
+        { en: ["estimate", "guess", "predict", "calculate", "approximate"], tr: ["tahmin etmek", "tahmin", "hesaplamak", "öngörmek"], pos: "fiil / isim" },
+        { en: ["evaluate", "assess", "judge", "rate", "appraise", "review"], tr: ["değerlendirmek", "ölçmek", "incelemek", "puanlamak"], pos: "fiil" },
+        { en: ["eventually", "finally", "ultimately", "in the end", "at last"], tr: ["sonunda", "nihayetinde", "eninde sonunda", "zamanla"], pos: "zarf" },
+        { en: ["evidence", "proof", "clue", "sign", "data"], tr: ["kanıt", "delil", "ispat", "bulgu", "belge"], pos: "isim" },
+        { en: ["exceed", "surpass", "go beyond", "pass", "top"], tr: ["aşmak", "geçmek", "üstüne çıkmak", "fazla olmak"], pos: "fiil" },
+        { en: ["exhausted", "tired", "worn out", "drained", "fatigued", "very tired"], tr: ["bitkin", "çok yorgun", "tükenmiş", "yorgun", "perişan"], pos: "sıfat" },
+        { en: ["expand", "grow", "enlarge", "extend", "widen", "increase"], tr: ["genişletmek", "büyümek", "genişlemek", "yaymak", "artırmak"], pos: "fiil" },
+        { en: ["flexible", "adaptable", "adjustable", "versatile", "bendable"], tr: ["esnek", "uyumlu", "yumuşak", "değişken"], pos: "sıfat" },
+        { en: ["frequently", "often", "regularly", "commonly", "repeatedly"], tr: ["sık sık", "sıklıkla", "çoğu zaman", "genellikle"], pos: "zarf" },
+        { en: ["frustrated", "annoyed", "upset", "disappointed", "irritated"], tr: ["hüsrana uğramış", "sinirli", "hayal kırıklığına uğramış", "bunalmış", "bıkkın"], pos: "sıfat" },
+        { en: ["genuine", "real", "authentic", "sincere", "true", "honest"], tr: ["gerçek", "samimi", "hakiki", "içten", "orijinal", "sahici"], pos: "sıfat" },
+        { en: ["gradually", "slowly", "step by step", "little by little", "steadily"], tr: ["yavaş yavaş", "giderek", "kademeli olarak", "azar azar", "zamanla"], pos: "zarf" },
+        { en: ["hesitate", "pause", "doubt", "waver", "hold back"], tr: ["tereddüt etmek", "duraksamak", "çekinmek", "kararsız kalmak"], pos: "fiil" },
+        { en: ["ignore", "neglect", "disregard", "overlook", "pay no attention"], tr: ["görmezden gelmek", "umursamamak", "yok saymak", "aldırmamak", "takmamak"], pos: "fiil" },
+        { en: ["impact", "effect", "influence", "result", "hit"], tr: ["etki", "darbe", "çarpma", "etkilemek", "sonuç"], pos: "isim" },
+        { en: ["impress", "amaze", "wow", "influence", "inspire"], tr: ["etkilemek", "hayran bırakmak", "göz doldurmak"], pos: "fiil" },
+        { en: ["indicate", "show", "point out", "suggest", "signal", "reveal"], tr: ["göstermek", "belirtmek", "işaret etmek", "ortaya koymak"], pos: "fiil" },
+        { en: ["inevitable", "unavoidable", "certain", "bound to happen"], tr: ["kaçınılmaz", "önlenemez", "kesin", "mutlak"], pos: "sıfat" },
+        { en: ["influence", "affect", "impact", "sway", "inspire"], tr: ["etki", "etkilemek", "nüfuz", "tesir"], pos: "isim / fiil" },
+        { en: ["initial", "first", "starting", "beginning", "early", "original"], tr: ["ilk", "başlangıç", "baştaki", "ilk başta"], pos: "sıfat" },
+        { en: ["insist", "persist", "demand", "push", "urge"], tr: ["ısrar etmek", "diretmek", "üstelemek", "tutturmak"], pos: "fiil" },
+        { en: ["maintain", "keep", "preserve", "sustain", "continue", "uphold"], tr: ["sürdürmek", "korumak", "devam ettirmek", "bakım yapmak", "muhafaza etmek"], pos: "fiil" }
+      ];
+
+      const STORAGE_LOGS = "kelime_tombala_logs_v1";
+      const STORAGE_RECORDS = "kelime_tombala_records_v1";
+
+      // Safe localStorage helpers
+      function loadJSON(key, fallback) {
+        try {
+          const raw = window.localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (e) {
+          return fallback;
+        }
+      }
+
+      function saveJSON(key, value) {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (e) {
+          // Ignore storage errors in restricted environments
+        }
+      }
+
+      function getTodayKey() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, "0");
+        const d = String(now.getDate()).padStart(2, "0");
+        return y + "-" + m + "-" + d;
+      }
+
+      function formatDateTR(dateKey) {
+        const parts = dateKey.split("-");
+        if (parts.length !== 3) return dateKey;
+        const months = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
+        const day = parseInt(parts[2], 10);
+        const month = months[parseInt(parts[1], 10) - 1] || parts[1];
+        return day + " " + month + " " + parts[0];
+      }
+
+      // Turkish-aware normalization & fuzzy matching
+      function normalizeText(str) {
+        if (!str) return "";
+        return str
+          .replace(/İ/g, "i")
+          .replace(/I/g, "i")
+          .replace(/ı/g, "i")
+          .toLowerCase()
+          .replace(/[ç]/g, "c")
+          .replace(/[ğ]/g, "g")
+          .replace(/[ö]/g, "o")
+          .replace(/[ş]/g, "s")
+          .replace(/[ü]/g, "u")
+          .replace(/[âîû]/g, function (c) {
+            return { "â": "a", "î": "i", "û": "u" }[c] || c;
+          })
+          .replace(/[.,!?;:'"()\[\]{}\-_\/\\]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function stripLeadingArticle(norm, dir) {
+        if (dir === "tr-en") {
+          return norm.replace(/^(to|a|an|the)\s+/, "").trim();
+        }
+        return norm.replace(/^bir\s+/, "").trim();
+      }
+
+      function levenshtein(a, b) {
+        const m = a.length;
+        const n = b.length;
+        if (m === 0) return n;
+        if (n === 0) return m;
+        let prev = new Array(n + 1);
+        let curr = new Array(n + 1);
+        for (let j = 0; j <= n; j++) prev[j] = j;
+        for (let i = 1; i <= m; i++) {
+          curr[0] = i;
+          const ca = a.charCodeAt(i - 1);
+          for (let j = 1; j <= n; j++) {
+            const cost = ca === b.charCodeAt(j - 1) ? 0 : 1;
+            curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+          }
+          const tmp = prev;
+          prev = curr;
+          curr = tmp;
+        }
+        return prev[n];
+      }
+
+      function allowedDistance(len) {
+        if (len <= 3) return 0;
+        if (len <= 6) return 1;
+        if (len <= 11) return 2;
+        return 3;
+      }
+
+      function checkSingleCandidate(uClean, acceptedList, dir) {
+        if (!uClean) return { ok: false, matchType: "empty" };
+
+        // 1. Exact normalized match
+        for (let i = 0; i < acceptedList.length; i++) {
+          const targetNorm = stripLeadingArticle(normalizeText(acceptedList[i]), dir);
+          if (uClean === targetNorm) {
+            return { ok: true, matchType: i === 0 ? "exact" : "synonym", matched: acceptedList[i] };
+          }
+        }
+
+        // 2. Fuzzy Levenshtein match
+        for (let i = 0; i < acceptedList.length; i++) {
+          const targetNorm = stripLeadingArticle(normalizeText(acceptedList[i]), dir);
+          const dist = levenshtein(uClean, targetNorm);
+          const maxLen = Math.max(uClean.length, targetNorm.length);
+          const limit = allowedDistance(maxLen);
+          if (dist <= limit) {
+            return { ok: true, matchType: "fuzzy", matched: acceptedList[i] };
+          }
+        }
+
+        // 3. Multi-word Turkish flexibility (e.g. minor phrasing overlap)
+        if (dir === "en-tr") {
+          const uWords = uClean.split(" ").filter(Boolean);
+          if (uWords.length >= 2) {
+            for (let i = 0; i < acceptedList.length; i++) {
+              const tWords = stripLeadingArticle(normalizeText(acceptedList[i]), dir).split(" ").filter(Boolean);
+              if (tWords.length >= 2 && Math.abs(uWords.length - tWords.length) <= 1) {
+                let matchedWords = 0;
+                for (let w = 0; w < uWords.length; w++) {
+                  const uw = uWords[w];
+                  const hit = tWords.some(function (tw) {
+                    return uw === tw || levenshtein(uw, tw) <= allowedDistance(Math.max(uw.length, tw.length));
+                  });
+                  if (hit) matchedWords++;
+                }
+                if (matchedWords >= Math.max(uWords.length, tWords.length) - 0) {
+                  return { ok: true, matchType: "fuzzy", matched: acceptedList[i] };
+                }
+              }
+            }
+          }
+        }
+
+        return { ok: false, matchType: "wrong" };
+      }
+
+      function checkAnswer(userRaw, acceptedList, dir) {
+        if (!userRaw || !userRaw.trim()) return { ok: false, matchType: "empty" };
+        const parts = userRaw.split(/[,;\/]+/).map(function (p) { return p.trim(); }).filter(Boolean);
+        if (parts.length === 0) return { ok: false, matchType: "empty" };
+        // Try full string first, then each separated candidate
+        const candidates = [userRaw].concat(parts.length > 1 ? parts : []);
+        for (let c = 0; c < candidates.length; c++) {
+          const uClean = stripLeadingArticle(normalizeText(candidates[c]), dir);
+          const res = checkSingleCandidate(uClean, acceptedList, dir);
+          if (res.ok) return res;
+        }
+        return { ok: false, matchType: "wrong" };
+      }
+
+      // App State
+      const state = {
+        bag: [],
+        bagIndex: 0,
+        dirBag: [],
+        dirIndex: 0,
+        lastDir: null,
+        sameDirCount: 0,
+        currentWord: null,
+        currentDir: "en-tr", // "en-tr" or "tr-en"
+        awaitingNext: false,
+        hasAnsweredOnce: false,
+        slotChars: [],
+        baseSlotCount: 0,
+        wordSpans: [],
+        activeSlot: 0,
+        correct: 0,
+        wrong: 0,
+        streak: 0,
+        sessionBestStreak: 0,
+        mistakes: [],
+        liveRecordNotified: { session: false, streak: false },
+        logs: loadJSON(STORAGE_LOGS, {}),
+        records: loadJSON(STORAGE_RECORDS, { bestSessionCorrect: 0, bestDailyCorrect: 0, bestStreak: 0 })
+      };
+
+      // DOM elements
+      const playView = document.getElementById("playView");
+      const summaryView = document.getElementById("summaryView");
+      const logView = document.getElementById("logView");
+      const statsBar = document.getElementById("statsBar");
+      const btnFinish = document.getElementById("btnFinish");
+      const btnOpenLog = document.getElementById("btnOpenLog");
+      const btnCloseLog = document.getElementById("btnCloseLog");
+      const btnNewSession = document.getElementById("btnNewSession");
+      const toastMsg = document.getElementById("toastMsg");
+
+      const statCorrect = document.getElementById("statCorrect");
+      const statWrong = document.getElementById("statWrong");
+      const statStreak = document.getElementById("statStreak");
+      const statBest = document.getElementById("statBest");
+
+      const directionBadge = document.getElementById("directionBadge");
+      const bagCounter = document.getElementById("bagCounter");
+      const wordBox = document.getElementById("wordBox");
+      const wordText = document.getElementById("wordText");
+      const wordPos = document.getElementById("wordPos");
+      const slotBox = document.getElementById("slotBox");
+      const slotDisplay = document.getElementById("slotDisplay");
+
+      const answerForm = document.getElementById("answerForm");
+      const answerInput = document.getElementById("answerInput");
+      const btnSubmit = document.getElementById("btnSubmit");
+      const btnSkip = document.getElementById("btnSkip");
+      const hintText = document.getElementById("hintText");
+
+      const feedbackCard = document.getElementById("feedbackCard");
+      const feedbackTitle = document.getElementById("feedbackTitle");
+      const feedbackDetail = document.getElementById("feedbackDetail");
+      const feedbackAlts = document.getElementById("feedbackAlts");
+      const recordLivePill = document.getElementById("recordLivePill");
+
+      let toastTimer = null;
+      function showToast(msg) {
+        toastMsg.textContent = msg;
+        toastMsg.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toastMsg.classList.remove("show");
+        }, 2600);
+      }
+
+      function shuffleBag() {
+        const arr = [];
+        for (let i = 0; i < WORD_BANK.length; i++) arr.push(i);
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
+        }
+        state.bag = arr;
+        state.bagIndex = 0;
+      }
+
+      function updateStatsUI() {
+        statCorrect.textContent = String(state.correct);
+        statWrong.textContent = String(state.wrong);
+        statStreak.textContent = String(state.streak);
+        statBest.textContent = String(Math.max(state.records.bestSessionCorrect, state.correct));
+      }
+
+      function refillDirBag() {
+        const arr = ["en-tr", "tr-en", "en-tr", "tr-en", "en-tr", "tr-en"];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
+        }
+        state.dirBag = arr;
+        state.dirIndex = 0;
+      }
+
+      function pickBalancedDirection() {
+        if (state.dirIndex >= state.dirBag.length) {
+          refillDirBag();
+        }
+        let dir = state.dirBag[state.dirIndex];
+        state.dirIndex += 1;
+        if (state.lastDir === dir && state.sameDirCount >= 2) {
+          dir = dir === "en-tr" ? "tr-en" : "en-tr";
+        }
+        if (state.lastDir === dir) {
+          state.sameDirCount += 1;
+        } else {
+          state.lastDir = dir;
+          state.sameDirCount = 1;
+        }
+        return dir;
+      }
+
+      const INPUT_SENTINEL = "\u200B";
+
+      function getCurrentCanonicalAnswer() {
+        if (!state.currentWord) return "";
+        return state.currentDir === "en-tr" ? state.currentWord.tr[0] : state.currentWord.en[0];
+      }
+
+      function initSlotsForWord() {
+        const canonical = getCurrentCanonicalAnswer();
+        const words = String(canonical || "").trim().split(/\s+/).filter(Boolean);
+        state.wordSpans = [];
+        let total = 0;
+        for (let wi = 0; wi < words.length; wi++) {
+          const chars = Array.from(words[wi]);
+          const start = total;
+          for (let ci = 0; ci < chars.length; ci++) {
+            if (chars[ci] !== "-") total++;
+          }
+          state.wordSpans.push({ start: start, end: total, rawChars: chars });
+        }
+        state.baseSlotCount = total;
+        state.slotChars = new Array(total).fill("");
+        const firstChar = Array.from(String(canonical || "").trim())[0] || "";
+        if (total > 0) {
+          state.slotChars[0] = firstChar;
+        }
+        state.activeSlot = total > 1 ? 1 : 0;
+        resetHiddenInput();
+      }
+
+      function resetHiddenInput() {
+        answerInput.value = INPUT_SENTINEL;
+        try {
+          answerInput.setSelectionRange(1, 1);
+        } catch (e) {}
+      }
+
+      function getAssembledAnswer() {
+        // Reconstruct typed answer with spaces at canonical word boundaries
+        const hasUserInput = state.slotChars.slice(1).some(function (c) { return c !== ""; });
+        if (!hasUserInput) return "";
+        const pieces = [];
+        for (let wi = 0; wi < state.wordSpans.length; wi++) {
+          const span = state.wordSpans[wi];
+          const isLast = wi === state.wordSpans.length - 1;
+          const endIdx = isLast ? state.slotChars.length : span.end;
+          let chunk = "";
+          for (let i = span.start; i < endIdx; i++) {
+            const ch = state.slotChars[i];
+            if (ch) chunk += ch;
+          }
+          if (chunk) pieces.push(chunk);
+        }
+        return pieces.join(" ").trim();
+      }
+
+      function trimExtraSlots() {
+        while (state.slotChars.length > state.baseSlotCount && state.slotChars[state.slotChars.length - 1] === "") {
+          state.slotChars.pop();
+        }
+        if (state.activeSlot > state.slotChars.length) {
+          state.activeSlot = state.slotChars.length;
+        }
+      }
+
+      function handleSlotBackspace() {
+        if (answerInput.disabled) return;
+        const idx = Math.max(1, state.activeSlot);
+        if (idx < state.slotChars.length && state.slotChars[idx] !== "") {
+          state.slotChars[idx] = "";
+          state.activeSlot = idx;
+        } else if (idx > 1) {
+          state.activeSlot = idx - 1;
+          state.slotChars[state.activeSlot] = "";
+        }
+        trimExtraSlots();
+        if (state.activeSlot < 1 && state.slotChars.length > 1) state.activeSlot = 1;
+        renderAnswerSlots();
+      }
+
+      function handleSlotDelete() {
+        if (answerInput.disabled) return;
+        const idx = Math.max(1, state.activeSlot);
+        if (idx < state.slotChars.length) {
+          state.slotChars[idx] = "";
+        }
+        trimExtraSlots();
+        if (state.activeSlot < 1 && state.slotChars.length > 1) state.activeSlot = 1;
+        renderAnswerSlots();
+      }
+
+      function insertSlotText(text) {
+        if (answerInput.disabled) return;
+        if (state.activeSlot < 1 && state.slotChars.length > 1) state.activeSlot = 1;
+        const chars = Array.from(text);
+        for (let i = 0; i < chars.length; i++) {
+          const ch = chars[i];
+          if (ch === " ") {
+            // Jump to the start of the next word span if available
+            const nextSpan = state.wordSpans.find(function (sp) { return sp.start > state.activeSlot; });
+            if (nextSpan) {
+              state.activeSlot = nextSpan.start;
+            }
+            continue;
+          }
+          if (state.activeSlot >= state.slotChars.length) {
+            state.slotChars.push(ch);
+          } else {
+            state.slotChars[state.activeSlot] = ch;
+          }
+          state.activeSlot += 1;
+        }
+        renderAnswerSlots();
+      }
+
+      function renderAnswerSlots() {
+        const canonical = getCurrentCanonicalAnswer();
+        const firstHintChar = Array.from(canonical || "")[0] || "";
+        const isFocused = document.activeElement === answerInput && !answerInput.disabled;
+        const hasAnyTyped = state.slotChars.some(function (c) { return c !== ""; });
+
+        const htmlWords = [];
+        for (let wi = 0; wi < state.wordSpans.length; wi++) {
+          const span = state.wordSpans[wi];
+          const isLast = wi === state.wordSpans.length - 1;
+          let slotIdx = span.start;
+          let inner = "";
+
+          for (let ci = 0; ci < span.rawChars.length; ci++) {
+            if (span.rawChars[ci] === "-") {
+              inner += '<span class="char-slot is-hyphen">-</span>';
+              continue;
+            }
+            const val = state.slotChars[slotIdx] || "";
+            if (slotIdx === 0) {
+              inner += '<span class="char-slot is-locked">' + escapeHtml(val || firstHintChar) + '</span>';
+            } else {
+              const isActive = isFocused && state.activeSlot === slotIdx;
+              if (val !== "") {
+                inner += '<span class="char-slot is-filled' + (isActive ? ' is-active' : '') + '" data-slot-idx="' + slotIdx + '">' + escapeHtml(val) + '</span>';
+              } else {
+                inner += '<span class="char-slot' + (isActive ? ' is-active' : '') + '" data-slot-idx="' + slotIdx + '">&nbsp;</span>';
+              }
+            }
+            slotIdx++;
+          }
+
+          // Extra slots if user types a longer synonym
+          if (isLast) {
+            for (let ei = span.end; ei < state.slotChars.length; ei++) {
+              const val = state.slotChars[ei] || "";
+              const isActive = isFocused && state.activeSlot === ei;
+              inner += '<span class="char-slot is-filled' + (isActive ? ' is-active' : '') + '" data-slot-idx="' + ei + '">' + (val ? escapeHtml(val) : '&nbsp;') + '</span>';
+            }
+          }
+
+          htmlWords.push('<span class="slot-word">' + inner + '</span>');
+        }
+        slotDisplay.innerHTML = htmlWords.join("");
+      }
+
+      function drawNextWord() {
+        if (state.bagIndex >= state.bag.length) {
+          shuffleBag();
+        }
+        const idx = state.bag[state.bagIndex];
+        state.bagIndex += 1;
+        state.currentWord = WORD_BANK[idx];
+        state.currentDir = pickBalancedDirection();
+        state.awaitingNext = false;
+
+        wordBox.classList.remove("is-correct", "is-wrong");
+        feedbackCard.classList.remove("show", "correct", "wrong");
+        recordLivePill.classList.remove("show");
+
+        if (state.currentDir === "en-tr") {
+          directionBadge.textContent = "İngilizce → Türkçe";
+          wordText.textContent = state.currentWord.en[0];
+        } else {
+          directionBadge.textContent = "Türkçe → İngilizce";
+          wordText.textContent = state.currentWord.tr[0];
+        }
+        wordPos.textContent = state.currentWord.pos;
+        bagCounter.textContent = "Torba: " + state.bagIndex + " / " + WORD_BANK.length;
+
+        answerInput.disabled = false;
+        slotBox.classList.remove("is-disabled");
+        initSlotsForWord();
+        btnSubmit.textContent = "Gönder";
+        btnSkip.style.visibility = "visible";
+        hintText.textContent = state.hasAnsweredOnce ? "" : "Alt çizgili alana dokunup yaz · Eş anlamlılar da kabul edilir.";
+        answerInput.focus();
+        renderAnswerSlots();
+      }
+
+      function evaluateSubmission(rawAnswer, isSkipped) {
+        const word = state.currentWord;
+        const dir = state.currentDir;
+        const accepted = dir === "en-tr" ? word.tr : word.en;
+        const promptWord = dir === "en-tr" ? word.en[0] : word.tr[0];
+        const canonicalAnswer = accepted[0];
+        const otherAlts = accepted.slice(1, 4);
+
+        let result = isSkipped ? { ok: false, matchType: "skipped" } : checkAnswer(rawAnswer, accepted, dir);
+        if (!isSkipped && !result.ok && canonicalAnswer) {
+          const firstChar = Array.from(canonicalAnswer)[0] || "";
+          if (firstChar && !normalizeText(rawAnswer).startsWith(normalizeText(firstChar))) {
+            const withPrefix = checkAnswer(firstChar + rawAnswer, accepted, dir);
+            if (withPrefix.ok) result = withPrefix;
+          }
+        }
+        state.hasAnsweredOnce = true;
+        state.awaitingNext = true;
+        answerInput.disabled = true;
+        slotBox.classList.add("is-disabled");
+        slotBox.classList.remove("is-focused");
+        renderAnswerSlots();
+        btnSubmit.textContent = "Sonraki →";
+        btnSkip.style.visibility = "hidden";
+        hintText.textContent = "Devam etmek için Enter'a bas veya Sonraki'ne dokun.";
+
+        recordLivePill.classList.remove("show");
+
+        if (result.ok) {
+          state.correct += 1;
+          state.streak += 1;
+          if (state.streak > state.sessionBestStreak) {
+            state.sessionBestStreak = state.streak;
+          }
+          wordBox.classList.add("is-correct");
+          feedbackCard.classList.add("show", "correct");
+          feedbackTitle.textContent = result.matchType === "exact" ? "Doğru!" : "Doğru! (Kabul edildi)";
+          feedbackDetail.textContent = "Karşılık: " + canonicalAnswer;
+          feedbackAlts.textContent = otherAlts.length > 0 ? "Diğer kabul edilenler: " + otherAlts.join(", ") : "";
+
+          // Live record notifications (only if beating an existing > 0 record)
+          const liveNotes = [];
+          if (state.records.bestSessionCorrect > 0 && state.correct > state.records.bestSessionCorrect && !state.liveRecordNotified.session) {
+            state.liveRecordNotified.session = true;
+            liveNotes.push("Yeni oturum rekoru (" + state.correct + " doğru)!");
+          }
+          if (state.records.bestStreak > 0 && state.streak > state.records.bestStreak && !state.liveRecordNotified.streak) {
+            state.liveRecordNotified.streak = true;
+            liveNotes.push("Yeni seri rekoru (" + state.streak + " üst üste)!");
+          }
+          if (liveNotes.length > 0) {
+            recordLivePill.textContent = "★ " + liveNotes.join(" · ");
+            recordLivePill.classList.add("show");
+          }
+        } else {
+          state.wrong += 1;
+          state.streak = 0;
+          state.mistakes.push({
+            prompt: promptWord,
+            dir: dir === "en-tr" ? "EN→TR" : "TR→EN",
+            yours: isSkipped ? "(Geçildi)" : rawAnswer.trim(),
+            correct: canonicalAnswer
+          });
+          wordBox.classList.add("is-wrong");
+          feedbackCard.classList.add("show", "wrong");
+          feedbackTitle.textContent = isSkipped ? "Doğru Cevap" : "Yanlış";
+          feedbackDetail.textContent = "Doğru cevap: " + canonicalAnswer;
+          feedbackAlts.textContent = otherAlts.length > 0 ? "Diğer anlamlar: " + otherAlts.join(", ") : "";
+        }
+
+        updateStatsUI();
+      }
+
+      function renderLogItems(container, logsObj, bestDaily) {
+        const dates = Object.keys(logsObj).sort().reverse().slice(0, 14);
+        if (dates.length === 0) {
+          container.innerHTML = '<div class="empty-state">Henüz tamamlanmış günlük kayıt yok.</div>';
+          return;
+        }
+        container.innerHTML = dates.map(function (dKey) {
+          const entry = logsObj[dKey];
+          const total = entry.correct + entry.wrong;
+          const acc = total > 0 ? Math.round((entry.correct / total) * 100) : 0;
+          const isBestDay = bestDaily > 0 && entry.correct === bestDaily;
+          return (
+            '<div class="log-item">' +
+              '<div class="log-date">' +
+                '<span>' + formatDateTR(dKey) + '</span>' +
+                (isBestDay ? '<span class="log-badge">Rekor Gün</span>' : '') +
+              '</div>' +
+              '<div class="log-stats">' +
+                '<span style="color:var(--primary); font-weight:700;">' + entry.correct + ' D</span> · ' +
+                '<span style="color:var(--accent); font-weight:700;">' + entry.wrong + ' Y</span> · ' +
+                '<span>%' + acc + '</span>' +
+                ' <span style="opacity:0.7;">(' + entry.sessions + ' oturum)</span>' +
+              '</div>' +
+            '</div>'
+          );
+        }).join("");
+      }
+
+      function finishSession() {
+        const total = state.correct + state.wrong;
+        if (total === 0) {
+          showToast("Önce en az bir kelime cevapla.");
+          return;
+        }
+
+        const todayKey = getTodayKey();
+        if (!state.logs[todayKey]) {
+          state.logs[todayKey] = { correct: 0, wrong: 0, sessions: 0, bestStreak: 0 };
+        }
+        state.logs[todayKey].correct += state.correct;
+        state.logs[todayKey].wrong += state.wrong;
+        state.logs[todayKey].sessions += 1;
+        if (state.sessionBestStreak > (state.logs[todayKey].bestStreak || 0)) {
+          state.logs[todayKey].bestStreak = state.sessionBestStreak;
+        }
+
+        // Check broken records
+        const brokenRecords = [];
+        const prevSessionRec = state.records.bestSessionCorrect || 0;
+        const prevDailyRec = state.records.bestDailyCorrect || 0;
+        const prevStreakRec = state.records.bestStreak || 0;
+
+        if (state.correct > prevSessionRec) {
+          state.records.bestSessionCorrect = state.correct;
+          brokenRecords.push(
+            prevSessionRec === 0
+              ? "İlk oturum rekorun: " + state.correct + " doğru"
+              : "Tek oturum doğrusu: " + prevSessionRec + " → " + state.correct
+          );
+        }
+
+        if (state.logs[todayKey].correct > prevDailyRec) {
+          state.records.bestDailyCorrect = state.logs[todayKey].correct;
+          brokenRecords.push(
+            prevDailyRec === 0
+              ? "İlk günlük toplam rekorun: " + state.logs[todayKey].correct + " doğru"
+              : "Günlük toplam doğru: " + prevDailyRec + " → " + state.logs[todayKey].correct
+          );
+        }
+
+        if (state.sessionBestStreak > prevStreakRec) {
+          state.records.bestStreak = state.sessionBestStreak;
+          brokenRecords.push(
+            prevStreakRec === 0
+              ? "İlk seri rekorun: " + state.sessionBestStreak + " üst üste"
+              : "En uzun doğru serisi: " + prevStreakRec + " → " + state.sessionBestStreak
+          );
+        }
+
+        saveJSON(STORAGE_LOGS, state.logs);
+        saveJSON(STORAGE_RECORDS, state.records);
+
+        // Populate summary UI
+        const acc = Math.round((state.correct / total) * 100);
+        document.getElementById("sumCorrect").textContent = String(state.correct);
+        document.getElementById("sumWrong").textContent = String(state.wrong);
+        document.getElementById("sumAccuracy").textContent = acc + "%";
+        document.getElementById("sumBestStreak").textContent = String(state.sessionBestStreak);
+        document.getElementById("summaryDateLabel").textContent = formatDateTR(todayKey);
+        document.getElementById("mistakeCountBadge").textContent = state.mistakes.length + " kelime";
+        document.getElementById("summaryDailyRecordTag").textContent = "Günlük Rekor: " + state.records.bestDailyCorrect + " D";
+
+        const recBanner = document.getElementById("summaryRecordBanner");
+        const recList = document.getElementById("summaryRecordList");
+        if (brokenRecords.length > 0) {
+          recList.innerHTML = brokenRecords.map(function (item) {
+            return "<li>" + item + "</li>";
+          }).join("");
+          recBanner.classList.add("show");
+        } else {
+          recBanner.classList.remove("show");
+        }
+
+        const mistakeList = document.getElementById("mistakeList");
+        if (state.mistakes.length === 0) {
+          mistakeList.innerHTML = '<div class="empty-state">Bu oturumda hiç yanlışın yok!</div>';
+        } else {
+          mistakeList.innerHTML = state.mistakes.map(function (m) {
+            return (
+              '<div class="mistake-item">' +
+                '<div class="mistake-word">' + escapeHtml(m.prompt) + ' <span style="font-size:11px; color:var(--text-muted); font-weight:600;">(' + m.dir + ')</span></div>' +
+                '<div class="mistake-row">' +
+                  '<span class="mistake-yours">Senin cevabın: ' + escapeHtml(m.yours) + '</span>' +
+                  '<span class="mistake-correct">Doğru: ' + escapeHtml(m.correct) + '</span>' +
+                '</div>' +
+              '</div>'
+            );
+          }).join("");
+        }
+
+        renderLogItems(document.getElementById("summaryLogList"), state.logs, state.records.bestDailyCorrect);
+
+        // Switch view
+        playView.style.display = "none";
+        statsBar.style.display = "none";
+        btnFinish.style.display = "none";
+        logView.classList.remove("show");
+        summaryView.classList.add("show");
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function startNewSession() {
+        state.correct = 0;
+        state.wrong = 0;
+        state.streak = 0;
+        state.sessionBestStreak = 0;
+        state.mistakes = [];
+        state.liveRecordNotified = { session: false, streak: false };
+
+        summaryView.classList.remove("show");
+        logView.classList.remove("show");
+        playView.style.display = "flex";
+        statsBar.style.display = "grid";
+        btnFinish.style.display = "inline-block";
+
+        updateStatsUI();
+        drawNextWord();
+      }
+
+      function openLogView() {
+        document.getElementById("recSession").textContent = String(state.records.bestSessionCorrect || 0);
+        document.getElementById("recDaily").textContent = String(state.records.bestDailyCorrect || 0);
+        document.getElementById("recStreak").textContent = String(state.records.bestStreak || 0);
+        renderLogItems(document.getElementById("fullLogList"), state.logs, state.records.bestDailyCorrect);
+
+        playView.style.display = "none";
+        statsBar.style.display = "none";
+        summaryView.classList.remove("show");
+        btnFinish.style.display = "none";
+        logView.classList.add("show");
+      }
+
+      function closeLogView() {
+        logView.classList.remove("show");
+        playView.style.display = "flex";
+        statsBar.style.display = "grid";
+        btnFinish.style.display = "inline-block";
+        if (!state.awaitingNext) {
+          answerInput.focus();
+        }
+      }
+
+      // Event Listeners
+      slotBox.addEventListener("click", function (e) {
+        if (answerInput.disabled) return;
+        const slotEl = e.target.closest(".char-slot[data-slot-idx]");
+        if (slotEl) {
+          const idx = parseInt(slotEl.getAttribute("data-slot-idx"), 10);
+          if (!isNaN(idx) && idx >= 1) {
+            state.activeSlot = idx;
+          }
+        }
+        answerInput.focus();
+        resetHiddenInput();
+        renderAnswerSlots();
+      });
+
+      answerInput.addEventListener("keydown", function (e) {
+        if (answerInput.disabled) return;
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          state.activeSlot = Math.max(1, state.activeSlot - 1);
+          renderAnswerSlots();
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          const maxPos = Math.max(state.slotChars.length - 1, 1);
+          state.activeSlot = Math.min(maxPos, state.activeSlot + 1);
+          renderAnswerSlots();
+        } else if (e.key === "Home") {
+          e.preventDefault();
+          state.activeSlot = 1;
+          renderAnswerSlots();
+        } else if (e.key === "End") {
+          e.preventDefault();
+          state.activeSlot = Math.max(state.slotChars.length - 1, 0);
+          renderAnswerSlots();
+        } else if (e.key === "Backspace") {
+          e.preventDefault();
+          handleSlotBackspace();
+          resetHiddenInput();
+        } else if (e.key === "Delete") {
+          e.preventDefault();
+          handleSlotDelete();
+          resetHiddenInput();
+        }
+      });
+
+      answerInput.addEventListener("input", function () {
+        if (answerInput.disabled) return;
+        const raw = answerInput.value || "";
+        if (raw === "") {
+          handleSlotBackspace();
+          resetHiddenInput();
+          return;
+        }
+        const added = raw.replace(/\u200B/g, "");
+        if (added.length > 0) {
+          insertSlotText(added);
+        }
+        resetHiddenInput();
+      });
+
+      answerInput.addEventListener("focus", function () {
+        slotBox.classList.add("is-focused");
+        resetHiddenInput();
+        renderAnswerSlots();
+      });
+
+      answerInput.addEventListener("blur", function () {
+        slotBox.classList.remove("is-focused");
+        renderAnswerSlots();
+      });
+
+      answerForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (state.awaitingNext) {
+          drawNextWord();
+          return;
+        }
+        const val = getAssembledAnswer();
+        if (!val) {
+          showToast("Lütfen bir cevap yaz veya 'Bilmiyorum'a dokun.");
+          answerInput.focus();
+          return;
+        }
+        evaluateSubmission(val, false);
+      });
+
+      btnSkip.addEventListener("click", function () {
+        if (!state.awaitingNext) {
+          evaluateSubmission("", true);
+        }
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && state.awaitingNext && playView.style.display !== "none") {
+          e.preventDefault();
+          drawNextWord();
+        }
+      });
+
+      btnFinish.addEventListener("click", finishSession);
+      btnNewSession.addEventListener("click", startNewSession);
+      btnOpenLog.addEventListener("click", openLogView);
+      btnCloseLog.addEventListener("click", closeLogView);
+
+      // Init
+      shuffleBag();
+      updateStatsUI();
+      drawNextWord();
+    })();
+  </script>
+</body>
+</html>

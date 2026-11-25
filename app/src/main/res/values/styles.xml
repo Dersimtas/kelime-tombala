@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.KelimeTombala" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#1F6E5C</item>
+        <item name="colorPrimaryDark">#175748</item>
+        <item name="colorAccent">#C85A32</item>
+        <item name="android:statusBarColor">#1F6E5C</item>
+        <item name="android:windowBackground">#F6F4EE</item>
+    </style>
+</resources>
